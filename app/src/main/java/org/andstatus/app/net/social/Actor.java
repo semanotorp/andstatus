@@ -81,6 +81,7 @@ public class Actor implements Comparable<Actor>, IsEmpty {
         "https://www.w3.org/ns/activitystreams#Public").setUsername("Public");
     public static final Actor FOLLOWERS = fromTwoIds(Origin.EMPTY, GroupType.FOLLOWERS, 0,
             "org.andstatus.app.net.social.Actor#Followers").setUsername("Followers");
+    public static final String PORT_AND_PATH_SEPARATOR = ":";
 
     @NonNull
     public final String oid;
@@ -395,8 +396,9 @@ public class Actor implements Comparable<Actor>, IsEmpty {
         return this;
     }
 
-    public static Optional<String> uniqueNameToUsername(Origin origin, String uniqueName) {
-        if (StringUtil.nonEmpty(uniqueName)) {
+    public static Optional<String> uniqueNameToUsername(Origin origin, String uniqueNameIn) {
+        if (StringUtil.nonEmpty(uniqueNameIn)) {
+            String uniqueName = origin.hasHost() ? uniqueNameIn : stripPortAndPath(uniqueNameIn);
             if (uniqueName.contains("@")) {
                 final String nameBeforeTheLastAt = uniqueName.substring(0, uniqueName.lastIndexOf("@"));
                 if (isWebFingerIdValid(uniqueName)) {
@@ -416,6 +418,11 @@ public class Actor implements Comparable<Actor>, IsEmpty {
             if (origin.isUsernameValid(uniqueName)) return Optional.of(uniqueName);
         }
         return Optional.empty();
+    }
+
+    private static String stripPortAndPath(String uniqueName) {
+        int indColon = uniqueName.indexOf(PORT_AND_PATH_SEPARATOR);
+        return indColon < 0 ? uniqueName : uniqueName.substring(0, indColon);
     }
 
     public static Optional<String> uniqueNameToWebFingerId(Origin origin, String uniqueName) {

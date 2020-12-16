@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         versionCode 336
-        versionName "57.05"
+        versionName "57.06"
 
         applicationId "org.andstatus.app"
         minSdkVersion rootProject.minSdkVersion

@@ -97,6 +97,9 @@ public final class UrlUtils {
             return fromString("http" + (isSsl ? "s" : "") + "://" + corrected);
         }
         URL urlIn = fromString(corrected);
+        if (urlIn == null) {
+            urlIn = fromString("http" + (isSsl ? "s" : "") + "://" + corrected);
+        }
         if (urlIn == null || urlIn.getProtocol().equals(isSsl ? "https" : "http")) {
             return urlIn;
         }

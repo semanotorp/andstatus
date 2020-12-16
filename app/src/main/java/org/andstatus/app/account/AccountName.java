@@ -26,6 +26,8 @@ import org.andstatus.app.origin.Origin;
 import org.andstatus.app.origin.OriginType;
 import org.andstatus.app.util.StringUtil;
 
+import static org.andstatus.app.net.social.Actor.PORT_AND_PATH_SEPARATOR;
+
 /**
  * Account name, unique for this application and suitable for {@link android.accounts.AccountManager}
  * The name is permanent and cannot be changed. This is why it may be used as Key to retrieve the account.
@@ -93,7 +95,7 @@ public class AccountName {
 
     private static String accountNameWithoutOrigin(String accountName) {
         String accountNameFixed = fixAccountName(accountName);
-        int indSeparator = accountNameFixed.indexOf(ORIGIN_SEPARATOR);
+        int indSeparator = accountNameFixed.lastIndexOf(ORIGIN_SEPARATOR);
         return indSeparator > 0
                 ? accountNameFixed.substring(0, indSeparator)
                 : accountNameFixed;
@@ -164,7 +166,13 @@ public class AccountName {
 
     public String getLogName() {
         return getUniqueName().replace("@", "-")
-                .replace(ORIGIN_SEPARATOR, "-");
+                .replace(ORIGIN_SEPARATOR, "-")
+                .replace(PORT_AND_PATH_SEPARATOR, "-");
+    }
+
+    public String getConnectionHost() {
+        int indAt = uniqueName.indexOf("@");
+        return indAt < 0 ? uniqueName : uniqueName.substring(indAt + 1);
     }
 
     @Override
